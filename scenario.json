@@ -1,0 +1,259 @@
+{
+  "label": "联办台演练接口",
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/dispatch/H-406",
+      "note": "热线任务，分项键在诉求内有效。affectedScope 是服务地点代码。",
+      "steps": [
+        {
+          "caseId": "H-406",
+          "affectedScope": "小桥北巷 2 号",
+          "parts": [
+            {
+              "id": "L1",
+              "service": "查漏",
+              "operator": "water"
+            },
+            {
+              "id": "L2",
+              "service": "恢复供暖",
+              "operator": "heat"
+            },
+            {
+              "id": "L3",
+              "service": "清理井室",
+              "operator": "water"
+            }
+          ]
+        },
+        {
+          "caseId": "H-406",
+          "affectedScope": "小桥北巷 2 号",
+          "parts": [
+            {
+              "id": "L1",
+              "service": "查漏",
+              "operator": "water"
+            },
+            {
+              "id": "L2",
+              "service": "恢复供暖",
+              "operator": "heat"
+            },
+            {
+              "id": "L3",
+              "service": "清理井室",
+              "operator": "water"
+            }
+          ]
+        }
+      ],
+      "status": 200,
+      "kind": "json"
+    },
+    {
+      "method": "GET",
+      "path": "/enterprise/live",
+      "note": "after 是企业投递偏移。next 是本页之后的查询位置，missing 是暂不可见偏移区间。",
+      "steps": [
+        {
+          "next": 11,
+          "missing": [
+            [
+              9,
+              10
+            ]
+          ],
+          "records": [
+            {
+              "offset": 11,
+              "type": "accepted",
+              "office": "heat",
+              "ticket": "T-81",
+              "handoff": "P-16",
+              "parts": [
+                "L2"
+              ]
+            }
+          ]
+        },
+        {
+          "next": 13,
+          "missing": [
+            [
+              9,
+              10
+            ]
+          ],
+          "records": [
+            {
+              "offset": 12,
+              "type": "resolved",
+              "office": "heat",
+              "ticket": "T-81",
+              "parts": [
+                "L2"
+              ],
+              "finding": "阀门调校"
+            },
+            {
+              "offset": 13,
+              "type": "resolved",
+              "office": "water",
+              "ticket": "W-51",
+              "parts": [
+                "L1",
+                "L2"
+              ],
+              "finding": "临时止漏"
+            }
+          ]
+        }
+      ],
+      "status": 200,
+      "kind": "json",
+      "query": {
+        "after": "8"
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/enterprise/replay",
+      "note": "from、to 是闭区间投递偏移。凭证 P-16 指明承接域，源工单和目标工单各有命名空间。",
+      "steps": [
+        {
+          "records": [
+            {
+              "offset": 9,
+              "type": "opened",
+              "office": "water",
+              "ticket": "W-51",
+              "parts": [
+                "L1",
+                "L2",
+                "L3"
+              ]
+            },
+            {
+              "offset": 10,
+              "type": "handed_off",
+              "office": "water",
+              "ticket": "W-51",
+              "handoff": "P-16",
+              "nextOffice": "heat",
+              "nextTicket": "T-81",
+              "parts": [
+                "L2"
+              ]
+            }
+          ]
+        },
+        {
+          "records": [
+            {
+              "offset": 9,
+              "type": "opened",
+              "office": "water",
+              "ticket": "W-51",
+              "parts": [
+                "L1",
+                "L2",
+                "L3"
+              ]
+            },
+            {
+              "offset": 10,
+              "type": "handed_off",
+              "office": "water",
+              "ticket": "W-51",
+              "handoff": "P-16",
+              "nextOffice": "heat",
+              "nextTicket": "T-81",
+              "parts": [
+                "L2"
+              ]
+            }
+          ]
+        }
+      ],
+      "status": 200,
+      "kind": "json",
+      "query": {
+        "from": "9",
+        "to": "10"
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/enterprise/findings",
+      "note": "证据号指向更正前后可核对的企业处理说明。",
+      "steps": [
+        {
+          "records": []
+        },
+        {
+          "records": [
+            {
+              "id": "F-71",
+              "ticket": "T-81",
+              "part": "L2",
+              "replacesOffset": 12,
+              "finding": "支管压差尚待复测"
+            }
+          ]
+        }
+      ],
+      "status": 200,
+      "kind": "json"
+    },
+    {
+      "method": "POST",
+      "path": "/hotline/replies",
+      "note": "requestKey 为发送方的回告身份。另需 caseId、part、text，可用 priorReceipt 引用已受理回告。",
+      "steps": [
+        {
+          "fields": [
+            "requestKey",
+            "caseId",
+            "part",
+            "text"
+          ],
+          "pendingUntil": 1,
+          "response": "receipt",
+          "drop": true
+        },
+        {
+          "fields": [
+            "requestKey",
+            "caseId",
+            "part",
+            "text"
+          ],
+          "pendingUntil": 1,
+          "response": "receipt",
+          "drop": true
+        }
+      ],
+      "status": 200,
+      "kind": "json"
+    },
+    {
+      "method": "GET",
+      "path": "/hotline/replies",
+      "note": "以 requestKey 查受理编号，未进入可见阶段只有受理状态。",
+      "steps": [
+        {
+          "lookup": "receipt",
+          "key": "requestKey"
+        },
+        {
+          "lookup": "receipt",
+          "key": "requestKey"
+        }
+      ],
+      "status": 200,
+      "kind": "json"
+    }
+  ]
+}
